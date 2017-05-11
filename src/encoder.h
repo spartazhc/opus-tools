@@ -2,7 +2,7 @@
 #define __OPUSENC_H
 
 #include <opus_types.h>
-#include <ogg/ogg.h>
+#include <opusenc.h>
 
 #ifdef ENABLE_NLS
 #include <libintl.h>
@@ -35,16 +35,13 @@ typedef struct
     int ignorelength;
     int skip;
     int extraout;
-    char *comments;
-    int comments_length;
+    OggOpusComments *comments;
     int copy_comments;
     int copy_pictures;
 } oe_enc_opt;
 
 void setup_scaler(oe_enc_opt *opt, float scale);
 void clear_scaler(oe_enc_opt *opt);
-void setup_padder(oe_enc_opt *opt, ogg_int64_t *original_samples);
-void clear_padder(oe_enc_opt *opt);
 int setup_downmix(oe_enc_opt *opt, int out_channels);
 void clear_downmix(oe_enc_opt *opt);
 void comment_add(char **comments, int* length, char *tag, char *val);
