@@ -144,6 +144,18 @@ AS_IF([test "$HAVE_PKG_CONFIG" = "yes"],
   ]))
  ])
 
+dnl check for libopusfile
+AS_IF([test "$HAVE_PKG_CONFIG" = "yes"],
+ [PKG_CHECK_MODULES([OPUSFILE],[opusfile >= 0.5])],
+ [
+  dnl fall back to the old school test
+  XIPH_PATH_OPUSFILE(, AC_MSG_ERROR([
+    libopusfile is required to build this package!
+    please see http://opus-codec.org/ for how to
+    obtain a copy.
+  ]))
+ ])
+
 dnl check for OSS
 HAVE_OSS=no
 AC_CHECK_HEADERS([sys/soundcard.h soundcard.h machine/soundcard.h],[
