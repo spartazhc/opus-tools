@@ -230,6 +230,7 @@ void save_range(FILE *frange, int frame_size, const unsigned char *packet, int n
     unsigned char toc;
     short size[48];
     payload_offset=0;
+    frames[0]=subpkt;
     nf=opus_packet_parse_impl(subpkt,parsed_size,i+1!=nb_streams,
       &toc,frames,size,&payload_offset);
     fprintf(frange,"[[%d",(int)(frames[0]-subpkt));
