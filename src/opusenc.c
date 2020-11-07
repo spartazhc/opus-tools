@@ -143,6 +143,8 @@ static void usage(void)
   printf(" --hard-cbr         Use hard constant bitrate encoding\n");
   printf(" --music            Tune low bitrates for music (override automatic detection)\n");
   printf(" --speech           Tune low bitrates for speech (override automatic detection)\n");
+  printf(" --audio            Set application to audio (override automatic detection)\n");
+  printf(" --voip             Set application to voip (override automatic detection)\n");
   printf(" --comp n           Set encoding complexity (0-10, default: 10 (slowest))\n");
   printf(" --framesize n      Set maximum frame size in milliseconds\n");
   printf("                      (2.5, 5, 10, 20, 40, 60, default: 20)\n");
@@ -361,6 +363,8 @@ int main(int argc, char **argv)
     {"cvbr",no_argument,NULL, 0},
     {"music", no_argument, NULL, 0},
     {"speech", no_argument, NULL, 0},
+    {"audio", no_argument, NULL, 0},
+    {"voip", no_argument, NULL, 0},
     {"comp", required_argument, NULL, 0},
     {"complexity", required_argument, NULL, 0},
     {"framesize", required_argument, NULL, 0},
@@ -428,6 +432,7 @@ int main(int argc, char **argv)
   int                with_hard_cbr=0;
   int                with_cvbr=0;
   int                signal_type=OPUS_AUTO;
+  int                application_type=OPUS_APPLICATION_AUDIO;
   int                expect_loss=0;
   int                complexity=10;
   int                downmix=0;
@@ -584,6 +589,10 @@ int main(int argc, char **argv)
           signal_type=OPUS_SIGNAL_MUSIC;
         } else if (strcmp(optname, "speech")==0) {
           signal_type=OPUS_SIGNAL_VOICE;
+        } else if (strcmp(optname, "audio")==0) {
+          application_type=OPUS_APPLICATION_AUDIO;
+        } else if (strcmp(optname, "voip")==0) {
+          application_type=OPUS_APPLICATION_VOIP;
         } else if (strcmp(optname, "expect-loss")==0) {
           expect_loss=atoi(optarg);
           if (expect_loss>100||expect_loss<0) {
@@ -939,6 +948,10 @@ int main(int argc, char **argv)
   ret = ope_encoder_ctl(enc, OPUS_SET_SIGNAL(signal_type));
   if (ret != OPE_OK) {
     fatal("Error: OPUS_SET_SIGNAL failed: %s\n", ope_strerror(ret));
+  }
+  ret = ope_encoder_ctl(enc, OPUS_SET_APPLICATION(application_type));
+  if (ret != OPE_OK) {
+    fatal("Error: OPUS_SET_APPLICATION failed: %s\n", ope_strerror(ret));
   }
   ret = ope_encoder_ctl(enc, OPUS_SET_COMPLEXITY(complexity));
   if (ret != OPE_OK) {
